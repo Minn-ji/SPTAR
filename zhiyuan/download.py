@@ -1,8 +1,8 @@
 from beir import util, LoggingHandler
-from beir.retrieval import models
-from beir.datasets.data_loader import GenericDataLoader
-from beir.retrieval.evaluation import EvaluateRetrieval
-from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
+# from beir.retrieval import models
+# from beir.datasets.data_loader import GenericDataLoader
+# from beir.retrieval.evaluation import EvaluateRetrieval
+# from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
 from os.path import exists, join
 import logging
 import pathlib, os
@@ -19,7 +19,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 #### Download scifact.zip dataset and unzip the dataset
 out_dir = os.path.join(data_dir, "raw", "beir")
 os.makedirs(out_dir, exist_ok=True)
-datasets = ["msmarco", "fiqa"]
+datasets = ["msmarco"]#, "fiqa"]
 for dataset in datasets:
     url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
     data_path = util.download_and_unzip(url, out_dir)

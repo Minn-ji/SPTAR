@@ -43,3 +43,12 @@ def main():
 
 if __name__ =="__main__":
     main()
+    '''
+    python zhiyuan/dpr_tasb_eval.py \
+    --dataset_name msmarco \
+    --version v1 \
+    --gpu_id 0 \
+    --train_num 50 \
+    --weak_num 100k \
+    --exp_names no_aug p_written_100k_vicuna_prompt_2_filtered_70 llama_7b_100k_fixed_v3_best_llama_prompt_2_filtered_70
+'''

@@ -10,7 +10,6 @@ from pathlib import Path
 from args import PromptTuringArgs
 from utils import AverageMeter, setup_train, get_device
 from torch.utils.tensorboard import SummaryWriter
-from dataset import MSMARCODataset, MSMARCOPointWiseDataset
 import argparse
 from utils import reset_args
 
@@ -29,7 +28,6 @@ def main(args):
 
     # dataset
     ir_dataset = MSMARCODataset(args, tokenizer)
-    # ir_dataset = MSMARCOPointWiseDataset(args, tokenizer)
     train_dataset, test_dataset = ir_dataset.get_dataset()
     train_dataloader = DataLoader(train_dataset['train'], shuffle=True, collate_fn=default_data_collator, batch_size=args.batch_size, pin_memory=True)
     eval_dataloader = DataLoader(train_dataset['test'], collate_fn=default_data_collator, batch_size=args.batch_size, pin_memory=True)

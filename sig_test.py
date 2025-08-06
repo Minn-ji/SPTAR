@@ -1,18 +1,12 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
-'''
-@File    :   sig_test.py
-@Time    :   2024/05/30 16:22:38
-@Author  :   Zhiyuan Peng@Santa Clara University
-@Version :   1.0
-@Desc    :   None
-'''
-from time import time
-from beir import util, LoggingHandler
-from beir.retrieval import models
-from beir.datasets.data_loader import GenericDataLoader
-from beir.retrieval.evaluation import EvaluateRetrieval
-from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
+
+# from time import time
+# from beir import util, LoggingHandler
+# from beir.retrieval import models
+# from beir.datasets.data_loader import GenericDataLoader
+# from beir.retrieval.evaluation import EvaluateRetrieval
+# from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
 import logging
 import pathlib, os
 import random
