@@ -1,6 +1,6 @@
 from transformers import AutoModelForCausalLM
 from peft import get_peft_model, PromptTuningInit, PromptTuningConfig, TaskType
-import torch
+import os
 import wandb
 from transformers import AutoTokenizer
 from torch.utils.data import DataLoader
@@ -12,7 +12,14 @@ import argparse
 from xuyang.args import PromptTuringArgs
 from xuyang.utils import reset_args, AverageMeter, setup_train
 from xuyang.dataset import MSMARCODataset
-hugging_face_api_key='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' # Llama 사용을 위한 것. gpt2는 필요 x
+hugging_face_api_key='your_huggingface_key' # Llama 사용을 위한 것. gpt2는 필요 x
+
+import torch
+
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
+torch.cuda.empty_cache()
+torch.cuda.ipc_collect()
 
 def load_tokenizer(args):
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, token=hugging_face_api_key)
