@@ -5,7 +5,7 @@ from beir import util, LoggingHandler
 # from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
 from os.path import exists, join
 import logging
-import pathlib, os
+import os
 cwd = os.getcwd()
 data_dir = join(cwd, "zhiyuan", "datasets")
 

@@ -1,5 +1,5 @@
 import argparse
-from utils import reset_args
+from xuyang.utils import reset_args
 
 class PromptTuringArgs:
     def __init__(self) -> None:
@@ -8,19 +8,19 @@ class PromptTuringArgs:
         self.device_idx = '7'
 
         # llm model parameters
-        self.llm_name = 'llama-v2-13b' # gpt2, llama-7b, vicuna-7b, llama-v2-13b
+        self.llm_name = 'llama-3.2-1b'  # gpt2, llama-7b, vicuna-7b, llama-3.2-1b
         if self.llm_name == 'llama-7b':
-            self.model_name_or_path = "/ssd/public_datasets/llama/llama_to_hf/llama-7b"
-            self.tokenizer_name_or_path = "/ssd/public_datasets/llama/llama_to_hf/llama-7b"
+            self.model_name_or_path = "meta-llama/Llama-2-7b-hf"
+            self.tokenizer_name_or_path = "meta-llama/Llama-2-7b-hf"
         elif self.llm_name == 'vicuna-7b':
-            self.model_name_or_path = "/ssd/public_datasets/llama/vicuna-7b"
-            self.tokenizer_name_or_path = "/ssd/public_datasets/llama/vicuna-7b"
-        elif self.llm_name == 'llama-v2-13b':
-            self.model_name_or_path = "/ssd/public_datasets/llama/llama_v2/Llama-2-13b-chat-hf"
-            self.tokenizer_name_or_path = "/ssd/public_datasets/llama/llama_v2/Llama-2-13b-chat-hf"
+            self.model_name_or_path = "lmsys/vicuna-7b-v1.5"
+            self.tokenizer_name_or_path = "lmsys/vicuna-7b-v1.5"
+        elif self.llm_name == 'llama-3.2-1b':
+            self.model_name_or_path = "meta-llama/Llama-3.2-1B"
+            self.tokenizer_name_or_path = "meta-llama/Llama-3.2-1B"
         else:
-            self.model_name_or_path = "gpt2"
-            self.tokenizer_name_or_path = "gpt2"
+            self.model_name_or_path = "openai-community/gpt2"
+            self.tokenizer_name_or_path = "openai-community/gpt2"
 
         # peft_config
         self.peft_type = 'CAUSAL_LM'
@@ -34,16 +34,16 @@ class PromptTuringArgs:
 
         # dataset parameters
         self.dataset_name = "ms_100"
-        self.train_data = "/home/xwu/project/LLMsAgumentedIR/xuyang/data/ms_50/prompt_tuning_50_train_text.csv"
-        self.eval_data = "/home/xwu/project/LLMsAgumentedIR/xuyang/data/ms_50/prompt_tuning_50_test_text.csv"
-        self.test_data = "/home/xwu/project/LLMsAgumentedIR/xuyang/data/ms_50/prompt_tuning_50_test_text.csv"
+        self.train_data = "/xuyang/data/ms_50/prompt_tuning_50_train_text.csv"
+        self.eval_data = "/xuyang/data/ms_50/prompt_tuning_50_test_text.csv"
+        self.test_data = "/xuyang/data/ms_50/prompt_tuning_50_test_text.csv"
         self.few_shot_num = 50
-        self.fixed_prompt = True
+        self.fixed_prompt = False
 
         # prompt parameters
         self.max_length = 1024
         self.lr = 3e-2
-        self.num_epochs = 100
+        self.num_epochs = 2
         self.batch_size = 1
         self.eval_batch_size = 2
 
@@ -51,7 +51,7 @@ class PromptTuringArgs:
         self.checkpoint_name = f"{self.dataset_name}_{self.model_name_or_path}_{self.peft_type}_{self.task_type}_v1.pt".replace("/", "_")
         
         # log file
-        self.experiment_dir = '/home/xwu/project/SPTAR/xuyang/llm_models'
+        self.experiment_dir = 'llm_models'
         self.experiment_description = 'test_pointwise_v1_{}_{}_{}_{}_{}'.format(self.dataset_name, self.peft_model_id, self.num_virtual_tokens, self.few_shot_num, self.prompt_num)
 
 

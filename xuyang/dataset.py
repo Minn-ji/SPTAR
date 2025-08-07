@@ -1,15 +1,18 @@
-from datasets import load_dataset
+import os
 import torch
 import random
 from random import choice
-from default_prompt import DefaultPrompt
+from datasets import load_dataset
+from xuyang.default_prompt import DefaultPrompt
+
 random.seed(10)
 
 class MSMARCODataset(object):
     def __init__(self, args, tokenizer) -> None:
-        data_files = {"train": args.train_data, "test": args.eval_data}
+        pwd = os.getcwd()
+        data_files = {"train": os.path.join(pwd, args.train_data), "test": os.path.join(pwd, args.eval_data)}
         self.dataset = load_dataset("csv", data_files=data_files)
-        self.test_dataset = load_dataset("csv", data_files={"test": args.test_data})
+        self.test_dataset = load_dataset("csv", data_files={"test": os.path.join(pwd, args.test_data)})
         self.args = args
         self.tokenizer = tokenizer
         self.text_column = "text_y"

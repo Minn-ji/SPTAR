@@ -200,8 +200,8 @@ def main():
     weak_nums = ["100k"]#, "5000"]
     for dataset_name in tqdm(datasets):
         for weak_num in weak_nums:
-            folder_path = join(beir_dir, dataset_name)
-            filter_unlabeled_corpus(folder_path)
+            # folder_path = join(beir_dir, dataset_name)
+            # filter_unlabeled_corpus(folder_path)
             sample_corpus(dataset_name, weak_num=weak_num)
 
 if __name__ == "__main__":

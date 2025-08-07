@@ -26,17 +26,17 @@ def setup_train(args):
 def reset_args(args):
     # reset llm model
     if args.llm_name == 'llama-7b':
-        args.model_name_or_path = "/ssd/public_datasets/llama/llama_to_hf/llama-7b"
-        args.tokenizer_name_or_path = "/ssd/public_datasets/llama/llama_to_hf/llama-7b"
+        args.model_name_or_path = "meta-llama/Llama-2-7b-hf"
+        args.tokenizer_name_or_path = "meta-llama/Llama-2-7b-hf"
     elif args.llm_name == 'vicuna-7b':
-        args.model_name_or_path = "/ssd/public_datasets/llama/vicuna-7b"
-        args.tokenizer_name_or_path = "/ssd/public_datasets/llama/vicuna-7b"
-    elif args.llm_name == 'llama-v2-13b':
-        args.model_name_or_path = "/ssd/public_datasets/llama/llama_v2/Llama-2-13b-chat-hf"
-        args.tokenizer_name_or_path = "/ssd/public_datasets/llama/llama_v2/Llama-2-13b-chat-hf"
+        args.model_name_or_path = "lmsys/vicuna-7b-v1.5"
+        args.tokenizer_name_or_path = "lmsys/vicuna-7b-v1.5"
+    elif args.llm_name == 'llama-3.2-1b':
+        args.model_name_or_path = "meta-llama/Llama-3.2-1B"
+        args.tokenizer_name_or_path = "meta-llama/Llama-3.2-1B"
     else:
-        args.model_name_or_path = "gpt2"
-        args.tokenizer_name_or_path = "gpt2"
+        args.model_name_or_path = "openai-community/gpt2"
+        args.tokenizer_name_or_path = "openai-community/gpt2"
     # reset path
     args.peft_model_id = f"{args.llm_name}_{args.peft_type}_{args.task_type}"
     args.checkpoint_name = f"{args.dataset_name}_{args.model_name_or_path}_{args.peft_type}_{args.task_type}_v1.pt".replace("/", "_")
@@ -52,8 +52,8 @@ def reset_args(args):
 def create_experiment_export_folder(args):
     experiment_dir = args.experiment_dir
     experiment_description = args.experiment_description
-    if not os.path.exists(experiment_dir):
-        os.mkdir(experiment_dir)
+
+    os.makedirs(experiment_dir, exist_ok=True)
     experiment_path = get_name_of_experiment_path(experiment_dir, experiment_description)
     os.mkdir(experiment_path)
     print('Folder created: ' + os.path.abspath(experiment_path))
