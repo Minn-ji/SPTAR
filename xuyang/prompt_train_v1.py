@@ -58,7 +58,10 @@ def main(args):
         tokenizer_name_or_path=args.model_name_or_path,
     )
     #  model은 LLM의 모든 파라미터를 포함(기존 임베딩, 모델 내부 파라미터 등)
-    model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, token=hugging_face_api_key)
+    model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path,
+                                                 token=hugging_face_api_key,
+                                                 torch_dtype=torch.float16,
+                                                 device_map="auto")
 
     # get_peft_model를 통해, 내부적으로 로드된 model의 파라미터을 처리함
     # LLM의 대부분의 원래 파라미터 전체, 즉 임베딩 및 모델 내부 파라미터를 requires_grad=False로 설정하여 freeze
