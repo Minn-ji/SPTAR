@@ -19,8 +19,10 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 #### Download scifact.zip dataset and unzip the dataset
 out_dir = os.path.join(data_dir, "raw", "beir")
 os.makedirs(out_dir, exist_ok=True)
-datasets = ["msmarco"]#, "fiqa"]
-for dataset in datasets:
-    url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
-    data_path = util.download_and_unzip(url, out_dir)
-    print(f"Dataset {dataset} download successfully ...")
+# datasets = ["law"]#, "fiqa"]
+# for dataset in datasets:
+#     url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
+#     data_path = util.download_and_unzip(url, out_dir)
+#     print(f"Dataset {dataset} download successfully ...")
+
+# TODO: datasets/raw/beir/law 폴더 만들고, corpus_filtered.jsonl, corpus.jsonl, queries.jsonl, qrels/query_corpus_score.csv 넣어두기

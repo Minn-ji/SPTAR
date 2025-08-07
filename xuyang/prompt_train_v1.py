@@ -12,7 +12,7 @@ import argparse
 from xuyang.args import PromptTuringArgs
 from xuyang.utils import reset_args, AverageMeter, setup_train
 from xuyang.dataset import MSMARCODataset
-hugging_face_api_key='hf_your_huggingface_token' # Llama 사용을 위한 것. gpt2는 필요 x
+hugging_face_api_key='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' # Llama 사용을 위한 것. gpt2는 필요 x
 
 def load_tokenizer(args):
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, token=hugging_face_api_key)
@@ -24,10 +24,11 @@ def main(args):
     # config
     export_root, args = setup_train(args)
     tokenizer = load_tokenizer(args)
-    wandb.init(project="prompt-tuning-msmarco", name=f"{args.llm_name}_{args.dataset_name}", config=args.__dict__)
+    wandb.init(project="prompt-tuning-law", name=f"{args.llm_name}_{args.dataset_name}", config=args.__dict__)
     # dataset
     ir_dataset = MSMARCODataset(args, tokenizer)
     train_dataset, test_dataset = ir_dataset.get_dataset()
+
     train_dataloader = DataLoader(train_dataset['train'], shuffle=True, collate_fn=default_data_collator, batch_size=args.batch_size, pin_memory=True)
     eval_dataloader = DataLoader(train_dataset['test'], collate_fn=default_data_collator, batch_size=args.batch_size, pin_memory=True)
     test_dataloader = DataLoader(test_dataset, collate_fn=default_data_collator, batch_size=args.batch_size, pin_memory=True)
@@ -174,4 +175,5 @@ if __name__ == "__main__":
     args = reset_args(args)
     main(args)
 # 위치는 최상단 (SPTAR 바로 아래)
-# python -m xuyang.prompt_train_v1 --device_idx 1 --num_virtual_tokens 50 --prompt_num 3 --llm_name gpt2 --train_data xuyang/data/msmarco_50/prompt_tuning_50_train_text.csv --eval_data xuyang/data/msmarco_50/prompt_tuning_50_test_text.csv --test_data xuyang/data/msmarco_50/prompt_tuning_50_test_text.csv --few_shot_num 50 --dataset_name ms_50
+# --train_data xuyang/data/law/prompt_tuning_50_train_text.csv --eval_data xuyang/data/msmarco_50/prompt_tuning_50_test_text.csv --test_data xuyang/data/msmarco_50/prompt_tuning_50_test_text.csv
+# python -m xuyang.prompt_train_v1 --device_idx 1 --num_virtual_tokens 50 --prompt_num 3 --llm_name llama-3.2-1b --few_shot_num 50 --dataset_name law

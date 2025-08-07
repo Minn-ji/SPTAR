@@ -27,6 +27,7 @@ cwd = os.getcwd()
 if join(cwd, "zhiyuan") not in sys.path:
     sys.path.append(join(cwd, "zhiyuan"))
     sys.path.append(join(cwd, "xuyang"))
+
 from data_process import load_dl, merge_queries, extract_results
 data_dir = join(cwd, "zhiyuan", "datasets")
 raw_dir = join(data_dir, "raw")

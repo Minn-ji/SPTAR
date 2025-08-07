@@ -1,0 +1,121 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            qu4qtibf6nrgb79rucfqwdoqtjrh28mx:
+                args:
+                    - --device_idx
+                    - "1"
+                    - --num_virtual_tokens
+                    - "50"
+                    - --prompt_num
+                    - "3"
+                    - --llm_name
+                    - gpt2
+                    - --few_shot_num
+                    - "50"
+                    - --dataset_name
+                    - law
+                cpu_count: 12
+                cpu_count_logical: 16
+                disk:
+                    /:
+                        total: "254918258688"
+                        used: "201749000192"
+                email: cmj04250@gmail.com
+                executable: C:\xai_6th_adv\.venv\Scripts\python.exe
+                git:
+                    commit: 652be6672ca490bbb8a7c427ad935aac1306988f
+                    remote: https://github.com/Minn-ji/SPTAR.git
+                host: Minji
+                memory:
+                    total: "16718430208"
+                os: Windows-11-10.0.26100-SP0
+                program: -m xuyang.prompt_train_v1
+                python: CPython 3.12.6
+                root: C:\xai_6th_adv\SPTAR
+                startedAt: "2025-08-07T08:18:08.425321Z"
+                writerId: qu4qtibf6nrgb79rucfqwdoqtjrh28mx
+        m: []
+        python_version: 3.12.6
+        t:
+            "1":
+                - 1
+                - 5
+                - 11
+                - 49
+                - 51
+                - 53
+                - 71
+                - 98
+            "2":
+                - 1
+                - 5
+                - 11
+                - 49
+                - 51
+                - 53
+                - 71
+                - 98
+            "3":
+                - 13
+                - 16
+            "4": 3.12.6
+            "5": 0.21.0
+            "6": 4.55.0
+            "8":
+                - 3
+            "12": 0.21.0
+            "13": windows-amd64
+batch_size:
+    value: 1
+checkpoint_name:
+    value: law_openai-community_gpt2_CAUSAL_LM_TEXT_v1.pt
+dataset_name:
+    value: law
+device:
+    value: cpu
+device_idx:
+    value: "1"
+eval_batch_size:
+    value: 2
+eval_data:
+    value: xuyang/data/law/prompt_tuning_test_text.csv
+experiment_description:
+    value: v1_pointwise_without_prompt_example_law_gpt2_gpt2_CAUSAL_LM_TEXT_50_50_3_fixed_prompt_contractive_hard_10_val_loss
+experiment_dir:
+    value: llm_models
+few_shot_num:
+    value: 50
+fixed_prompt:
+    value: true
+llm_name:
+    value: gpt2
+lr:
+    value: 0.03
+max_length:
+    value: 1024
+model_name_or_path:
+    value: openai-community/gpt2
+num_epochs:
+    value: 2
+num_virtual_tokens:
+    value: 50
+peft_model_id:
+    value: gpt2_CAUSAL_LM_TEXT
+peft_type:
+    value: CAUSAL_LM
+prompt_num:
+    value: 3
+prompt_tuning_init_text:
+    value: please generate query for this document
+task_type:
+    value: TEXT
+test_data:
+    value: xuyang/data/law/prompt_tuning_test_text.csv
+text_len:
+    value: 1024
+tokenizer_name_or_path:
+    value: openai-community/gpt2
+train_data:
+    value: xuyang/data/law/prompt_tuning_train_text.csv

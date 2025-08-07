@@ -33,6 +33,9 @@ class MSMARCODataset(object):
             if args.dataset_name == 'fever_50':
                 self.fixed_one_shot_prompt = DefaultPrompt.fever_50_fixed_one_shot_prompt
                 self.fixed_two_shot_prompt = DefaultPrompt.fever_50_fixed_two_shot_prompt
+            if args.dataset_name == 'law':
+                self.fixed_one_shot_prompt = DefaultPrompt.law_50_fixed_one_shot_prompt
+                self.fixed_two_shot_prompt = DefaultPrompt.law_50_fixed_two_shot_prompt
 
     def preprocess_function(self, examples):
         batch_size = len(examples[self.text_column])

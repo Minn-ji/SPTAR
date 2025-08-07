@@ -33,12 +33,12 @@ class PromptTuringArgs:
         self.text_len = 1024
 
         # dataset parameters
-        self.dataset_name = "ms_100"
-        self.train_data = "/xuyang/data/ms_50/prompt_tuning_50_train_text.csv"
-        self.eval_data = "/xuyang/data/ms_50/prompt_tuning_50_test_text.csv"
-        self.test_data = "/xuyang/data/ms_50/prompt_tuning_50_test_text.csv"
+        self.dataset_name = "law"
+        self.train_data = "xuyang/data/law/prompt_tuning_train_text.csv"
+        self.eval_data = "xuyang/data/law/prompt_tuning_test_text.csv"
+        self.test_data = "xuyang/data/law/prompt_tuning_test_text.csv"
         self.few_shot_num = 50
-        self.fixed_prompt = False
+        self.fixed_prompt = True
 
         # prompt parameters
         self.max_length = 1024
