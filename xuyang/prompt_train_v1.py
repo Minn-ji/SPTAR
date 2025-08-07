@@ -8,11 +8,14 @@ from transformers import default_data_collator, get_linear_schedule_with_warmup
 from tqdm import tqdm
 from pathlib import Path
 import argparse
-
+from dotenv import load_dotenv
 from xuyang.args import PromptTuringArgs
 from xuyang.utils import reset_args, AverageMeter, setup_train
 from xuyang.dataset import MSMARCODataset
-hugging_face_api_key='your_huggingface_key' # Llama 사용을 위한 것. gpt2는 필요 x
+
+load_dotenv()
+
+hugging_face_api_key = os.getenv("HUGGINGFACE_API_KEY")
 
 import torch
 
@@ -62,6 +65,7 @@ def main(args):
     # peft_config에 정의된 새로운 Prompt Tuning 파라미터인 Soft Prompt 임베딩 레이어의 파라미터)만
     # requires_grad=True로 설정하여 학습 가능하게 함
     model = get_peft_model(model, peft_config)
+    model.gradient_checkpointing_enable()
     # model.print_trainable_parameters()
 
     # optimizer and lr scheduler
