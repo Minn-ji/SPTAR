@@ -8,7 +8,7 @@ class PromptTuringArgs:
         self.device_idx = '7'
 
         # llm model parameters
-        self.llm_name = 'llama-3.2-1b'  # gpt2, llama-7b, vicuna-7b, llama-3.2-1b
+        self.llm_name = 'tiny_llama-1.1b'  # gpt2, llama-7b, vicuna-7b, llama-3.2-1b
         if self.llm_name == 'tiny_llama-1.1b':
             self.model_name_or_path = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
             self.tokenizer_name_or_path = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"

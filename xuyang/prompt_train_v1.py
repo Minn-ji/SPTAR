@@ -94,6 +94,8 @@ def main(args):
         model.train()
         for step, batch in enumerate(tqdm(train_dataloader)):
             batch = {k: v.to(args.device) for k, v in batch.items()}
+            with torch.no_grad():
+                batch["labels"][batch["labels"] >= model.config.vocab_size] = -100
             outputs = model(**batch)
             loss = outputs.loss
             total_train_loss += loss.detach().float()
