@@ -64,6 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("--llm_name", type=str, help="model name")
     parser.add_argument("--device_idx", type=str, help="device id")
     parser.add_argument("--prompt_num", type=int, help="prompt number")
+    parser.add_argument("--num_epochs", type=int, help="epoch number", default=10)
     parser.add_argument("--dataset_name", type=str, help="dataset name")
     parser.add_argument("--train_data", type=str, help="train data path")
     parser.add_argument("--eval_data", type=str, help="eval data path")
