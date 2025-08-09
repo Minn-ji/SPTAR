@@ -18,7 +18,7 @@ def setup_train(args):
 
     export_root = create_experiment_export_folder(args)
     export_experiments_config_as_json(args, export_root)
-
+    print('Train Settings : ')
     pp.pprint({k: v for k, v in args.__dict__.items() if v is not None}, width=1)
     return export_root, args
 
@@ -28,15 +28,19 @@ def reset_args(args):
     if args.llm_name == 'tiny_llama-1.1b':
         args.model_name_or_path = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
         args.tokenizer_name_or_path = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+        args.max_length = 2048
     elif args.llm_name == 'qwen2.5-1.5b':
         args.model_name_or_path = "Qwen/Qwen2.5-1.5B-Instruct"
         args.tokenizer_name_or_path = "Qwen/Qwen2.5-1.5B-Instruct"
+        args.max_length = 32768
     elif args.llm_name == 'llama-3.2-1b':
         args.model_name_or_path = "meta-llama/Llama-3.2-1B"
         args.tokenizer_name_or_path = "meta-llama/Llama-3.2-1B"
+        args.max_length = 131072
     else:
         args.model_name_or_path = "openai-community/gpt2"
         args.tokenizer_name_or_path = "openai-community/gpt2"
+        args.max_length = 1024
     # reset path
     args.peft_model_id = f"{args.llm_name}_{args.peft_type}_{args.task_type}"
     args.checkpoint_name = f"{args.dataset_name}_{args.model_name_or_path}_{args.peft_type}_{args.task_type}_v1.pt".replace("/", "_")
@@ -97,11 +101,6 @@ def fix_random_seed_as(random_seed):
     cudnn.deterministic = True
     cudnn.benchmark = False
 
-
-# def set_up_gpu(args):
-#     os.environ['CUDA_VISIBLE_DEVICES'] = args['device_idx']
-#     # args['num_gpu'] = len(args['device_idx'].split(","))
-#     get_device(args)
 
 def get_device(args):
     if torch.cuda.is_available():

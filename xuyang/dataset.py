@@ -13,6 +13,9 @@ class MSMARCODataset(object):
         data_files = {"train": os.path.join(pwd, args.train_data), "test": os.path.join(pwd, args.eval_data)}
         self.dataset = load_dataset("csv", data_files=data_files)
         self.test_dataset = load_dataset("csv", data_files={"test": os.path.join(pwd, args.test_data)})
+        ## TODO: gpu issue..
+        self.dataset["train"] = self.dataset["train"].select(range(200))
+
         self.args = args
         self.tokenizer = tokenizer
         self.text_column = "text_y"
@@ -94,11 +97,11 @@ class MSMARCODataset(object):
         for i in range(batch_size):
             sample_input_ids = model_inputs["input_ids"][i]
             label_input_ids = labels["input_ids"][i] + [self.tokenizer.pad_token_id]
-            # print(i, sample_input_ids, label_input_ids)
+
             model_inputs["input_ids"][i] = sample_input_ids + label_input_ids
             labels["input_ids"][i] = [-100] * len(sample_input_ids) + label_input_ids
             model_inputs["attention_mask"][i] = [1] * len(model_inputs["input_ids"][i])
-        # print(model_inputs)
+
         for i in range(batch_size):
             sample_input_ids = model_inputs["input_ids"][i]
             label_input_ids = labels["input_ids"][i]
