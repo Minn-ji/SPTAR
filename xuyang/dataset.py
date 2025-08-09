@@ -14,7 +14,7 @@ class MSMARCODataset(object):
         self.dataset = load_dataset("csv", data_files=data_files)
         self.test_dataset = load_dataset("csv", data_files={"test": os.path.join(pwd, args.test_data)})
         ## TODO: gpu issue..
-        # self.dataset["train"] = self.dataset["train"].select(range(200))
+        self.dataset["train"] = self.dataset["train"].select(range(100))
 
         self.args = args
         self.tokenizer = tokenizer
