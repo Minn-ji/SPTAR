@@ -1,7 +1,7 @@
 from transformers import AutoModelForCausalLM
 from peft import get_peft_model, PromptTuningInit, PromptTuningConfig, TaskType
 import os
-import wandb
+# import wandb
 from transformers import AutoTokenizer
 from torch.utils.data import DataLoader
 from transformers import default_data_collator, get_linear_schedule_with_warmup
@@ -56,10 +56,12 @@ def load_tokenizer(args):
     return tokenizer
 
 def main(args):
+    os.makedirs(args.output_log_path, exist_ok=True)
+
     # config
     export_root, args = setup_train(args)
     tokenizer = load_tokenizer(args)
-    wandb.init(project="prompt-tuning-law", name=f"{args.llm_name}_{args.dataset_name}", config=args.__dict__)
+    # wandb.init(project="prompt-tuning-law", name=f"{args.llm_name}_{args.dataset_name}", config=args.__dict__)
     # dataset
     ir_dataset = MSMARCODataset(args, tokenizer)
     train_dataset, test_dataset = ir_dataset.get_dataset()
@@ -163,13 +165,13 @@ def main(args):
         else:
             early_stop_epoch += 1
         # logger
-        wandb.log({
-            'epoch': epoch,
-            'train_loss': avg_train_loss.avg,
-            'val_loss': avg_val_loss.avg,
-            'train_ppl': train_ppl,
-            'eval_ppl': eval_ppl
-        })
+        # wandb.log({
+        #     'epoch': epoch,
+        #     'train_loss': avg_train_loss.avg,
+        #     'val_loss': avg_val_loss.avg,
+        #     'train_ppl': train_ppl,
+        #     'eval_ppl': eval_ppl
+        # })
         print(f"{epoch=}: {train_ppl=} {avg_train_loss.avg=} {eval_ppl=} {avg_val_loss.avg=}")
 
     print('-------- 평가 --------')
@@ -199,12 +201,12 @@ def main(args):
             print("🔸 정답 레이블:", decoded_labels[i])
     test_epoch_loss = total_test_loss / len(test_dataloader)
     test_ppl = torch.exp(test_epoch_loss).detach().float().item()
-    wandb.log({
-        'test_loss': avg_test_loss.avg,
-        'test_ppl': test_ppl
-    })
+    # wandb.log({
+    #     'test_loss': avg_test_loss.avg,
+    #     'test_ppl': test_ppl
+    # })
     print(f"{epoch=}: {train_ppl=} {avg_train_loss.avg=} {eval_ppl=} {avg_val_loss.avg=} {test_ppl=} {avg_test_loss.avg=}")
-    wandb.finish()
+    # wandb.finish()
 
 if __name__ == "__main__":
     base_args = PromptTuringArgs()
