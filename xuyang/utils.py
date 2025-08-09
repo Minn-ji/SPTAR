@@ -28,9 +28,9 @@ def reset_args(args):
     if args.llm_name == 'llama-7b':
         args.model_name_or_path = "meta-llama/Llama-2-7b-hf"
         args.tokenizer_name_or_path = "meta-llama/Llama-2-7b-hf"
-    elif args.llm_name == 'vicuna-7b':
-        args.model_name_or_path = "lmsys/vicuna-7b-v1.5"
-        args.tokenizer_name_or_path = "lmsys/vicuna-7b-v1.5"
+    elif args.llm_name == 'qwen2.5-1.5b':
+        args.model_name_or_path = "Qwen/Qwen2.5-1.5B-Instruct"
+        args.tokenizer_name_or_path = "Qwen/Qwen2.5-1.5B-Instruct"
     elif args.llm_name == 'llama-3.2-1b':
         args.model_name_or_path = "meta-llama/Llama-3.2-1B"
         args.tokenizer_name_or_path = "meta-llama/Llama-3.2-1B"

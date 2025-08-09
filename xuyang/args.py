@@ -7,7 +7,7 @@ class PromptTuringArgs:
         self.device = 'cuda:0'
         self.device_idx = '7'
 
-        # llm model parameters
+        # llm model parameters util도 변경할 것
         self.llm_name = 'tiny_llama-1.1b'  # gpt2, llama-7b, qwen2.5-1.5b, llama-3.2-1b
         if self.llm_name == 'tiny_llama-1.1b':
             self.model_name_or_path = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
