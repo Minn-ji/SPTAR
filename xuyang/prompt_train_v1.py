@@ -174,38 +174,6 @@ def main(args):
         # })
         print(f"{epoch=}: {train_ppl=} {avg_train_loss.avg=} {eval_ppl=} {avg_val_loss.avg=}")
 
-    print('-------- 평가 --------')
-    # evaluate test dataset
-    total_test_loss = 0
-    avg_test_loss = AverageMeter()
-    model.eval()
-    for step, batch in enumerate(tqdm(test_dataloader)):
-        batch = {k: v.to(args.device) for k, v in batch.items()}
-        batch = _sanitize_and_check(batch, model, tokenizer)
-        with torch.no_grad():
-            outputs = model(**batch)
-        loss = outputs.loss
-        total_test_loss += loss.detach().float()
-        avg_test_loss.update(loss.detach().float().item())
-        preds = torch.argmax(outputs.logits, dim=-1)
-
-        labels = batch['labels'].clone().detach().cpu()
-        labels[labels == -100] = tokenizer.pad_token_id
-
-        decoded_preds = tokenizer.batch_decode(preds.detach().cpu(), skip_special_tokens=True)
-        decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
-
-        for i in range(len(decoded_preds)):
-            print(f"\n[샘플 {i + 1}]")
-            print("🔹 모델 생성:", decoded_preds[i])
-            print("🔸 정답 레이블:", decoded_labels[i])
-    test_epoch_loss = total_test_loss / len(test_dataloader)
-    test_ppl = torch.exp(test_epoch_loss).detach().float().item()
-    # wandb.log({
-    #     'test_loss': avg_test_loss.avg,
-    #     'test_ppl': test_ppl
-    # })
-    print(f"{epoch=}: {train_ppl=} {avg_train_loss.avg=} {eval_ppl=} {avg_val_loss.avg=} {test_ppl=} {avg_test_loss.avg=}")
     # wandb.finish()
 
 if __name__ == "__main__":
