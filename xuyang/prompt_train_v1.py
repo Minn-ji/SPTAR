@@ -23,6 +23,27 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 torch.cuda.empty_cache()
 torch.cuda.ipc_collect()
+def _sanitize_and_check(batch, model, tokenizer):
+    # dtype 보정
+    if batch["labels"].dtype != torch.long:
+        batch["labels"] = batch["labels"].long()
+
+    # 라벨 보정: 음수 전부 -100로, vocab_size 이상도 -100
+    with torch.no_grad():
+        labels = batch["labels"]
+        labels[labels < 0] = -100
+        labels[labels >= model.config.vocab_size] = -100
+        batch["labels"] = labels
+
+    # input_ids 범위 검사 (임베딩 인덱스 오류 방지)
+    ids = batch["input_ids"]
+    V = model.config.vocab_size
+    if not torch.all((ids >= 0) & (ids < V)):
+        # 어디서 터졌는지 바로 알 수 있게 예외
+        mn = int(ids.min().item()); mx = int(ids.max().item())
+        raise RuntimeError(f"input_ids out of range: min={mn}, max={mx}, vocab_size={V}")
+
+    return batch
 
 def load_tokenizer(args):
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, token=hugging_face_api_key)
@@ -96,19 +117,21 @@ def main(args):
             batch = {k: v.to(args.device) for k, v in batch.items()}
             with torch.no_grad():
                 batch["labels"][batch["labels"] >= model.config.vocab_size] = -100
-            outputs = model(**batch)
-            loss = outputs.loss
-            total_train_loss += loss.detach().float()
-            avg_train_loss.update(loss.detach().float().item())
-            loss.backward()
-            optimizer.step()
-            lr_scheduler.step()
-            optimizer.zero_grad()
+                batch = _sanitize_and_check(batch, model, tokenizer)
+                outputs = model(**batch)
+                loss = outputs.loss
+                total_train_loss += loss.detach().float()
+                avg_train_loss.update(loss.detach().float().item())
+                loss.backward()
+                optimizer.step()
+                lr_scheduler.step()
+                optimizer.zero_grad()
 
         # evaluate eval dataset
         eval_preds = []
         for step, batch in enumerate(tqdm(eval_dataloader)):
             batch = {k: v.to(args.device) for k, v in batch.items()}
+            batch = _sanitize_and_check(batch, model, tokenizer)
             with torch.no_grad():
                 outputs = model(**batch)
             loss = outputs.loss
