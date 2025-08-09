@@ -45,7 +45,7 @@ class PromptTuringArgs:
 
         # prompt parameters
         self.lr = 3e-2
-        self.num_epochs = 2
+        self.num_epochs = 20
         self.batch_size = 1
         self.eval_batch_size = 2
 
