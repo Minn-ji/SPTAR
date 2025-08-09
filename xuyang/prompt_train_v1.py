@@ -115,9 +115,8 @@ def main(args):
         model.train()
         for step, batch in enumerate(tqdm(train_dataloader)):
             batch = {k: v.to(args.device) for k, v in batch.items()}
+            batch = _sanitize_and_check(batch, model, tokenizer)
             with torch.no_grad():
-                batch["labels"][batch["labels"] >= model.config.vocab_size] = -100
-                batch = _sanitize_and_check(batch, model, tokenizer)
                 outputs = model(**batch)
                 loss = outputs.loss
                 total_train_loss += loss.detach().float()
@@ -172,6 +171,7 @@ def main(args):
     model.eval()
     for step, batch in enumerate(tqdm(test_dataloader)):
         batch = {k: v.to(args.device) for k, v in batch.items()}
+        batch = _sanitize_and_check(batch, model, tokenizer)
         with torch.no_grad():
             outputs = model(**batch)
         loss = outputs.loss
