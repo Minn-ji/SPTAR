@@ -154,3 +154,4 @@ __pycache__/
 # **/weak_train_*_filtered_*.tsv
 zhiyuan/retriever/col_bert/data/
 mlruns
+/wandb
