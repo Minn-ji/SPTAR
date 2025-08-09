@@ -12,25 +12,27 @@ class PromptTuringArgs:
         if self.llm_name == 'tiny_llama-1.1b':
             self.model_name_or_path = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
             self.tokenizer_name_or_path = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+            self.max_length = 2048
         elif self.llm_name == 'qwen2.5-1.5b':
             self.model_name_or_path = "Qwen/Qwen2.5-1.5B-Instruct"
             self.tokenizer_name_or_path = "Qwen/Qwen2.5-1.5B-Instruct"
+            self.max_length = 32768
         elif self.llm_name == 'llama-3.2-1b':
             self.model_name_or_path = "meta-llama/Llama-3.2-1B"
             self.tokenizer_name_or_path = "meta-llama/Llama-3.2-1B"
+            self.max_length = 131072
         else:
             self.model_name_or_path = "openai-community/gpt2"
             self.tokenizer_name_or_path = "openai-community/gpt2"
+            self.max_length = 1024
 
         # peft_config
         self.peft_type = 'CAUSAL_LM'
         self.task_type = 'TEXT'
         self.num_virtual_tokens = 50
         self.prompt_tuning_init_text = "please generate query for this document"
-        # self.prompt_tuning_init_text = "Does the passage answer the question? Please respond with a simple 'Yes' or 'No.'"
         self.peft_model_id = f"{self.llm_name}_{self.peft_type}_{self.task_type}"
         self.prompt_num = 2
-        self.text_len = 31000
 
         # dataset parameters
         self.dataset_name = "law"
@@ -41,7 +43,6 @@ class PromptTuringArgs:
         self.fixed_prompt = True
 
         # prompt parameters
-        self.max_length = 31000
         self.lr = 3e-2
         self.num_epochs = 2
         self.batch_size = 1

@@ -18,21 +18,20 @@ class MSMARCODataset(object):
         self.text_column = "text_y"
         self.label_column = "text_x"
         self.max_length = args.max_length
+        self.num_virtual_tokens = getattr(args, "num_virtual_tokens", 0)
+        try:
+            self.tokenizer.model_max_length = self.max_length
+        except Exception:
+            pass
+        self.eff_max_len = max(16, self.max_length - self.num_virtual_tokens)
+        self.text_len_for_cut = max(128, int(self.eff_max_len * 0.6))
         self.fixed_prompt = args.fixed_prompt
         self.prompt_from_train_only = False
+
         if self.fixed_prompt:
             if args.dataset_name == 'ms_50':
                 self.fixed_one_shot_prompt = DefaultPrompt.ms_50_fixed_one_shot_prompt
                 self.fixed_two_shot_prompt = DefaultPrompt.ms_50_fixed_two_shot_prompt
-            if args.dataset_name == 'fiqa_50':
-                self.fixed_one_shot_prompt = DefaultPrompt.fiqa_50_fixed_one_shot_prompt
-                self.fixed_two_shot_prompt = DefaultPrompt.fiqa_50_fixed_two_shot_prompt
-            if args.dataset_name == 'hotpotqa_50':
-                self.fixed_one_shot_prompt = DefaultPrompt.hotpotqa_50_fixed_one_shot_prompt
-                self.fixed_two_shot_prompt = DefaultPrompt.hotpotqa_50_fixed_two_shot_prompt
-            if args.dataset_name == 'fever_50':
-                self.fixed_one_shot_prompt = DefaultPrompt.fever_50_fixed_one_shot_prompt
-                self.fixed_two_shot_prompt = DefaultPrompt.fever_50_fixed_two_shot_prompt
             if args.dataset_name == 'law':
                 self.fixed_one_shot_prompt = DefaultPrompt.law_50_fixed_one_shot_prompt
                 self.fixed_two_shot_prompt = DefaultPrompt.law_50_fixed_two_shot_prompt
@@ -40,12 +39,13 @@ class MSMARCODataset(object):
     def preprocess_function(self, examples):
         batch_size = len(examples[self.text_column])
         inputs = []
-        corpus_list = self.cut_text(examples[self.text_column], self.args.text_len)
-        label_list =  self.cut_text(examples[self.label_column], self.args.text_len)
+        corpus_list = self.cut_text(examples[self.text_column], self.text_len_for_cut)
+        label_list = self.cut_text(examples[self.label_column], self.text_len_for_cut)
+
         if (self.prompt_from_train_only and batch_size != self.dataset['train'].shape[0]):
             full_prompt_idx = self.dataset['train'].shape[0]
-            prompt_corpus_list = self.cut_text(self.dataset['train'][self.text_column], self.args.text_len)
-            prompt_label_list = self.cut_text(self.dataset['train'][self.label_column], self.args.text_len)
+            prompt_corpus_list = self.cut_text(self.dataset['train'][self.text_column], self.text_len_for_cut)
+            prompt_label_list = self.cut_text(self.dataset['train'][self.label_column], self.text_len_for_cut)
         else:
             full_prompt_idx = batch_size
         if self.args.prompt_num == 2:
@@ -89,9 +89,8 @@ class MSMARCODataset(object):
         for i in labels["input_ids"]:
             if len(i) > dynamic_label_length:
                 dynamic_label_length = len(i)
-        self.max_length = dynamic_input_length + dynamic_label_length + 5
-        # if self.max_length >= 512:
-        #     self.max_length = 512
+        self.max_length = min(dynamic_input_length + dynamic_label_length + 5, self.eff_max_len)
+
         for i in range(batch_size):
             sample_input_ids = model_inputs["input_ids"][i]
             label_input_ids = labels["input_ids"][i] + [self.tokenizer.pad_token_id]
@@ -130,16 +129,19 @@ class MSMARCODataset(object):
         inputs = [f"Document: {x} \n Relevant Query: " for x in examples[self.text_column]]
         model_inputs = self.tokenizer(inputs)
         # print(model_inputs)
+        cap = self.eff_max_len
         for i in range(batch_size):
             sample_input_ids = model_inputs["input_ids"][i]
-            model_inputs["input_ids"][i] = [self.tokenizer.pad_token_id] * (
-                self.max_length - len(sample_input_ids)
-            ) + sample_input_ids
-            model_inputs["attention_mask"][i] = [0] * (self.max_length - len(sample_input_ids)) + model_inputs[
-                "attention_mask"
-            ][i]
-            model_inputs["input_ids"][i] = torch.tensor(model_inputs["input_ids"][i][:self.max_length])
-            model_inputs["attention_mask"][i] = torch.tensor(model_inputs["attention_mask"][i][:self.max_length])
+            if len(sample_input_ids) >= cap:
+                model_inputs["input_ids"][i] = sample_input_ids[-cap:]
+                model_inputs["attention_mask"][i] = model_inputs["attention_mask"][i][-cap:]
+            else:
+                pad = cap - len(sample_input_ids)
+                model_inputs["input_ids"][i] = [self.tokenizer.pad_token_id] * pad + sample_input_ids
+                model_inputs["attention_mask"][i] = [0] * pad + model_inputs["attention_mask"][i]
+
+            model_inputs["input_ids"][i] = torch.tensor(model_inputs["input_ids"][i][:cap])
+            model_inputs["attention_mask"][i] = torch.tensor(model_inputs["attention_mask"][i][:cap])
         return model_inputs
     
     def get_dataset(self):
