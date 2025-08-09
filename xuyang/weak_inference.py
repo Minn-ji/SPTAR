@@ -67,18 +67,31 @@ def weak_infer(model, tokenizer, corpus_filtered, device, weak_queries_path, wea
                     new_prompt = "Document: {} \n Relevant Query: {} \n Document: {} \n Relevant Query: {} \n Document: {} \n Relevant Query: ".format(train_prompt[prompt_idx_1]['text_x'], train_prompt[prompt_idx_1]['text_y'], train_prompt[prompt_idx_2]['text_x'], train_prompt[prompt_idx_2]['text_y'], corpus_text)
             else:
                 new_prompt = "Document: {} \n Relevant Query: ".format(corpus_text)
-            inputs = tokenizer(new_prompt, return_tensors="pt")
+            cap = getattr(model.config, "max_position_embeddings", None) or tokenizer.model_max_length or 2048
+            inputs = tokenizer(
+                new_prompt,
+                return_tensors="pt",
+                truncation=True,  # ✅ 길이 초과 방지
+                max_length=cap,
+                padding=False
+            )
+            inputs = {k: v.to(device) for k, v in inputs.items()}
+            input_len = inputs["input_ids"].shape[1]  # ✅ 프롬프트 길이
+
             with torch.no_grad():
-                inputs = {k: v.to(device) for k, v in inputs.items()}
                 outputs = model.generate(
-                    input_ids=inputs["input_ids"], 
-                    attention_mask=inputs["attention_mask"], 
-                    max_new_tokens=128, 
+                    **inputs,
+                    do_sample=True,  # ✅ temperature 쓰려면 필요
+                    temperature=0.7,
+                    max_new_tokens=128,  # ✅ 생성 길이 상한
                     eos_token_id=tokenizer.eos_token_id,
-                    temperature=0.7
+                    pad_token_id=tokenizer.pad_token_id,
                 )
-                new_query = tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0][len(new_prompt):]
-                new_query = simple_filter(new_query)
+
+            # ✅ 입력 부분을 제외한 생성 토큰만 디코드 (문자열 슬라이싱 대신 토큰 기준)
+            gen_ids = outputs[0][input_len: input_len + 128]
+            new_query = tokenizer.decode(gen_ids, skip_special_tokens=True)
+            new_query = simple_filter(new_query)
             if len(new_query) == 0:
                 gen_trail += 1
             else:
@@ -111,12 +124,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     config = PeftConfig.from_pretrained(args.peft_model_id)
-    model = AutoModelForCausalLM.from_pretrained(config.base_model_name_or_path)
+    model = AutoModelForCausalLM.from_pretrained(config.base_model_name_or_path, torch_dtype=torch.float16)
     model = PeftModel.from_pretrained(model, args.peft_model_id)
     tokenizer = AutoTokenizer.from_pretrained(config.base_model_name_or_path)
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token_id = tokenizer.eos_token_id
+    tokenizer.padding_side = "right"
+    model.config.use_cache = True  # ✅ 인퍼런스 메모리/속도 유리
+    model.eval()
     model.to(args.device)
+    torch.set_grad_enabled(False)  # ✅ 인퍼런스에서 그래프 비활성화
     corpus_filtered = json.loads(pd.read_csv(args.data_path).iloc[:10,:].to_json(orient="records"))
     train_prompt = json.loads(pd.read_csv(args.train_prompt_path).to_json(orient="records"))
     weak_infer(model, tokenizer, corpus_filtered, args.device, args.weak_queries_path, args.weak_train_path,
@@ -124,12 +141,4 @@ if __name__ == "__main__":
 
 
 
-# python -m xuyang.weak_inference --weak_queries_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.jsonl \
-#     --weak_train_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.csv \
-#     --peft_model_id llm_models/v1_pointwise_without_prompt_example_law_tiny_llama-1.1b_tiny_llama-1.1b_CAUSAL_LM_TEXT_50_50_3_fixed_prompt_contractive_hard_10_val_loss_2025-08-09_1/tiny_llama-1.1b_CAUSAL_LM_TEXT/
-#     --data_path xuyang/data/law/100k/corpus_filtered.csv \
-#     --prompt_num 3 \
-#     --dataset_name law \
-#     --new_query_id 5000000 \
-#     --train_prompt_path xuyang/data/law/prompt_tuning_train_text.csv \
-#     --device cpu gpu일때 생략
+# python -m xuyang.weak_inference --weak_queries_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.jsonl --weak_train_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.csv --peft_model_id llm_models/v1_pointwise_without_prompt_example_law_tiny_llama-1.1b_tiny_llama-1.1b_CAUSAL_LM_TEXT_50_50_3_fixed_prompt_contractive_hard_10_val_loss_2025-08-09_1/tiny_llama-1.1b_CAUSAL_LM_TEXT/ --data_path xuyang/data/law/corpus_filtered.csv --prompt_num 3 --dataset_name law --new_query_id 5000000 --train_prompt_path xuyang/data/law/prompt_tuning_train_text.csv --device cpu
