@@ -20,28 +20,32 @@ hugging_face_api_key = os.getenv("HUGGINGFACE_API_KEY")
 import torch
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+if torch.cuda.is_available():
+    torch.cuda.empty_cache()
+    torch.cuda.ipc_collect()
 
-torch.cuda.empty_cache()
-torch.cuda.ipc_collect()
 def _sanitize_and_check(batch, model, tokenizer):
-    # dtype 보정
-    if batch["labels"].dtype != torch.long:
-        batch["labels"] = batch["labels"].long()
+    if torch.cuda.is_available():
+        # dtype 보정
+        if batch["labels"].dtype != torch.long:
+            batch["labels"] = batch["labels"].long()
 
-    # 라벨 보정: 음수 전부 -100로, vocab_size 이상도 -100
-    with torch.no_grad():
-        labels = batch["labels"]
-        labels[labels < 0] = -100
-        labels[labels >= model.config.vocab_size] = -100
-        batch["labels"] = labels
+        # 라벨 보정: 음수 전부 -100로, vocab_size 이상도 -100
+        with torch.no_grad():
+            labels = batch["labels"]
+            labels[labels < 0] = -100
+            labels[labels >= model.config.vocab_size] = -100
+            batch["labels"] = labels
 
-    # input_ids 범위 검사 (임베딩 인덱스 오류 방지)
-    ids = batch["input_ids"]
-    V = model.config.vocab_size
-    if not torch.all((ids >= 0) & (ids < V)):
-        # 어디서 터졌는지 바로 알 수 있게 예외
-        mn = int(ids.min().item()); mx = int(ids.max().item())
-        raise RuntimeError(f"input_ids out of range: min={mn}, max={mx}, vocab_size={V}")
+        # input_ids 범위 검사 (임베딩 인덱스 오류 방지)
+        ids = batch["input_ids"]
+        V = model.config.vocab_size
+        if not torch.all((ids >= 0) & (ids < V)):
+            # 어디서 터졌는지 바로 알 수 있게 예외
+            mn = int(ids.min().item()); mx = int(ids.max().item())
+            raise RuntimeError(f"input_ids out of range: min={mn}, max={mx}, vocab_size={V}")
+    else:
+        batch = batch
 
     return batch
 
@@ -130,6 +134,7 @@ def main(args):
             optimizer.zero_grad(set_to_none=True)
 
         # evaluate eval dataset
+        print('\nevaluate eval dataset')
         eval_preds = []
         for step, batch in enumerate(tqdm(eval_dataloader)):
             batch = {k: v.to(args.device) for k, v in batch.items()}
