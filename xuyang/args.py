@@ -30,7 +30,7 @@ class PromptTuringArgs:
         # self.prompt_tuning_init_text = "Does the passage answer the question? Please respond with a simple 'Yes' or 'No.'"
         self.peft_model_id = f"{self.llm_name}_{self.peft_type}_{self.task_type}"
         self.prompt_num = 2
-        self.text_len = 1024
+        self.text_len = 31000
 
         # dataset parameters
         self.dataset_name = "law"
@@ -41,7 +41,7 @@ class PromptTuringArgs:
         self.fixed_prompt = True
 
         # prompt parameters
-        self.max_length = 1024
+        self.max_length = 31000
         self.lr = 3e-2
         self.num_epochs = 2
         self.batch_size = 1
