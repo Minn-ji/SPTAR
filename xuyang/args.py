@@ -41,7 +41,7 @@ class PromptTuringArgs:
         self.test_data = "xuyang/data/law/prompt_tuning_test_text.csv"
         self.few_shot_num = 50
         self.fixed_prompt = True
-        self.output_log_path = 'mylog'
+        self.output_log_path = 'train_log'
 
         # prompt parameters
         self.lr = 3e-2
