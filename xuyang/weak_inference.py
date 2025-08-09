@@ -1,3 +1,5 @@
+import os
+
 import torch
 import json
 import csv
@@ -30,18 +32,13 @@ def fix_prompt_controller(dataset_name):
     if 'ms_' in dataset_name:
         fixed_one_shot_prompt = DefaultPrompt.ms_50_fixed_one_shot_prompt
         fixed_two_shot_prompt = DefaultPrompt.ms_50_fixed_two_shot_prompt
-    if dataset_name == 'fiqa_50':
-        fixed_one_shot_prompt = DefaultPrompt.fiqa_50_fixed_one_shot_prompt
-        fixed_two_shot_prompt = DefaultPrompt.fiqa_50_fixed_two_shot_prompt
-    if dataset_name == 'hotpotqa_50':
-        fixed_one_shot_prompt = DefaultPrompt.hotpotqa_50_fixed_one_shot_prompt
-        fixed_two_shot_prompt = DefaultPrompt.hotpotqa_50_fixed_two_shot_prompt
-    if dataset_name == 'fever_50':
-        fixed_one_shot_prompt = DefaultPrompt.fever_50_fixed_one_shot_prompt
-        fixed_two_shot_prompt = DefaultPrompt.fever_50_fixed_two_shot_prompt
+    if 'law' in dataset_name:
+        fixed_one_shot_prompt = DefaultPrompt.law_50_fixed_one_shot_prompt
+        fixed_two_shot_prompt = DefaultPrompt.law_50_fixed_two_shot_prompt
     return fixed_one_shot_prompt, fixed_two_shot_prompt
 
 def weak_infer(model, tokenizer, corpus_filtered, device, weak_queries_path, weak_train_path, prompt_num, train_prompt, dataset_name, new_query_id=2000000, fixed_prompt=True):
+    os.makedirs(f'inference_output/{dataset_name}/', exist_ok=True)
     model.eval()
     weak_query_list = []
     weak_query_doc_id_list = []
@@ -122,4 +119,17 @@ if __name__ == "__main__":
     model.to(args.device)
     corpus_filtered = json.loads(pd.read_csv(args.data_path).iloc[:10,:].to_json(orient="records"))
     train_prompt = json.loads(pd.read_csv(args.train_prompt_path).to_json(orient="records"))
-    weak_infer(model, tokenizer, corpus_filtered, args.device, args.weak_queries_path, args.weak_train_path, args.prompt_num, train_prompt, args.dataset_name, int(args.new_query_id))
+    weak_infer(model, tokenizer, corpus_filtered, args.device, args.weak_queries_path, args.weak_train_path,
+               args.prompt_num, train_prompt, args.dataset_name, int(args.new_query_id))
+
+
+
+# python -m xuyang.weak_inference --weak_queries_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.jsonl \
+#     --weak_train_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.csv \
+#     --peft_model_id llm_models/v1_pointwise_without_prompt_example_law_tiny_llama-1.1b_tiny_llama-1.1b_CAUSAL_LM_TEXT_50_50_3_fixed_prompt_contractive_hard_10_val_loss_2025-08-09_1/tiny_llama-1.1b_CAUSAL_LM_TEXT/
+#     --data_path xuyang/data/law/100k/corpus_filtered.csv \
+#     --prompt_num 3 \
+#     --dataset_name law \
+#     --new_query_id 5000000 \
+#     --train_prompt_path xuyang/data/law/prompt_tuning_train_text.csv \
+#     --device cpu gpu일때 생략
