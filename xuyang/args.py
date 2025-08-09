@@ -20,7 +20,7 @@ class PromptTuringArgs:
         elif self.llm_name == 'llama-3.2-1b':
             self.model_name_or_path = "meta-llama/Llama-3.2-1B"
             self.tokenizer_name_or_path = "meta-llama/Llama-3.2-1B"
-            self.max_length = 131072
+            self.max_length = 40000
         elif self.llm_name == 'gpt2':
             self.model_name_or_path = "openai-community/gpt2"
             self.tokenizer_name_or_path = "openai-community/gpt2"

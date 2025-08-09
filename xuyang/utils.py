@@ -36,7 +36,7 @@ def reset_args(args):
     elif args.llm_name == 'llama-3.2-1b':
         args.model_name_or_path = "meta-llama/Llama-3.2-1B"
         args.tokenizer_name_or_path = "meta-llama/Llama-3.2-1B"
-        args.max_length = 131072
+        args.max_length = 40000 # 131072
     else:
         args.model_name_or_path = "openai-community/gpt2"
         args.tokenizer_name_or_path = "openai-community/gpt2"
