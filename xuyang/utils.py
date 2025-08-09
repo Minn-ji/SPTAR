@@ -25,9 +25,9 @@ def setup_train(args):
 
 def reset_args(args):
     # reset llm model
-    if args.llm_name == 'llama-7b':
-        args.model_name_or_path = "meta-llama/Llama-2-7b-hf"
-        args.tokenizer_name_or_path = "meta-llama/Llama-2-7b-hf"
+    if args.llm_name == 'tiny_llama-1.1b':
+        args.model_name_or_path = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+        args.tokenizer_name_or_path = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
     elif args.llm_name == 'qwen2.5-1.5b':
         args.model_name_or_path = "Qwen/Qwen2.5-1.5B-Instruct"
         args.tokenizer_name_or_path = "Qwen/Qwen2.5-1.5B-Instruct"
