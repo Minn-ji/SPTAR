@@ -90,7 +90,8 @@ def main(args):
     # requires_grad=True로 설정하여 학습 가능하게 함
     model = get_peft_model(model, peft_config)
     model.gradient_checkpointing_enable()
-    # model.print_trainable_parameters()
+    model.config.use_cache = False  # gradient_checkpointing_enable()와 충돌 방지
+    model.gradient_checkpointing_enable()
 
     # optimizer and lr scheduler
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
@@ -116,15 +117,17 @@ def main(args):
         for step, batch in enumerate(tqdm(train_dataloader)):
             batch = {k: v.to(args.device) for k, v in batch.items()}
             batch = _sanitize_and_check(batch, model, tokenizer)
-            with torch.no_grad():
-                outputs = model(**batch)
-                loss = outputs.loss
-                total_train_loss += loss.detach().float()
-                avg_train_loss.update(loss.detach().float().item())
-                loss.backward()
-                optimizer.step()
-                lr_scheduler.step()
-                optimizer.zero_grad()
+
+            outputs = model(**batch)
+            loss = outputs.loss
+
+            total_train_loss += loss.detach().float()
+            avg_train_loss.update(loss.detach().float().item())
+
+            loss.backward()
+            optimizer.step()
+            lr_scheduler.step()
+            optimizer.zero_grad(set_to_none=True)
 
         # evaluate eval dataset
         eval_preds = []
