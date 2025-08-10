@@ -24,7 +24,7 @@ soft_prompt_dir = join("soft_prompt", "data")
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset_name', required=False, default="law", type=str)
 parser.add_argument('--num_epochs', required=False, default=20, type=int)
-parser.add_argument('--train_num', required=False, default=50, type=int)
+parser.add_argument('--train_num', required=False, default=100, type=int)
 parser.add_argument('--product', required=False, default="cosine", type=str)
 parser.add_argument('--exp_name', required=False, default="no_aug", type=str)
 args = parser.parse_args()
@@ -50,10 +50,10 @@ else:
     # add support for loading weak data and ori train as new train
     weak_query_file = join("inference_output", args.dataset_name, f"weak_queries_50_tiny_llama-1.1b_523_prompt_3.jsonl")
     weak_qrels_file = join("inference_output", args.dataset_name, f"weak_train_50_tiny_llama-1.1b_523_prompt_3.csv")
-    corpus, queries, qrels = WeakDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_100k_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(soft_prompt_dir, args.dataset_name, "prompt_tuning_train_text.tsv"), weak_query_file=weak_query_file, weak_qrels_file=weak_qrels_file).load_weak_custom()
+    corpus, queries, qrels = WeakDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_100k_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(soft_prompt_dir, args.dataset_name, "prompt_tuning_train_text.csv"), weak_query_file=weak_query_file, weak_qrels_file=weak_qrels_file).load_weak_custom()
 
 #### Please Note not all datasets contain a dev split, comment out the line if such the case
-dev_corpus, dev_queries, dev_qrels = GenericDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_100k_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(beir_dir, args.dataset_name, "qrels", "dev.tsv")).load_custom()
+dev_corpus, dev_queries, dev_qrels = GenericDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_100k_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(beir_dir, args.dataset_name, "qrels", "test.tsv")).load_custom()
 seed_everything(42)
 
 
@@ -61,6 +61,7 @@ if args.dataset_name == "msmarco":
     train_batch_size = 96
 else:
     train_batch_size = 4
+
 num_epochs = args.num_epochs
 # We train the network with as a binary label task
 # Given [query, passage] is the label 0 = irrelevant or 1 = relevant?
