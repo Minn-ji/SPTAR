@@ -1,8 +1,8 @@
 
 
-inference_output/
-law_dataset/
-llm_models/
+inference_output
+law_dataset
+llm_models
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
