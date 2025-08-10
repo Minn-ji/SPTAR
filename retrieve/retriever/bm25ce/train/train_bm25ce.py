@@ -14,12 +14,12 @@ from sentence_transformers import InputExample
 from sentence_transformers.cross_encoder import CrossEncoder
 from sentence_transformers.cross_encoder.evaluation import CERerankingEvaluator
 
-from zhiyuan.weak_data_loader import WeakDataLoader
-from zhiyuan.utils import seed_everything
+from retrieve.weak_data_loader import WeakDataLoader
+from retrieve.utils import seed_everything
 
-data_dir = join("zhiyuan", "datasets")
+data_dir = join("retrieve", "datasets")
 beir_dir = join("raw", "beir")
-xuyang_dir = join("xuyang", "data")
+soft_prompt_dir = join("soft_prompt", "data")
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset_name', required=False, default="law", type=str)
@@ -45,12 +45,12 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 #### /print debug information to stdout
 #### Provide the data_path where nfcorpus has been downloaded and unzipped
 if args.exp_name == "no_aug":
-    corpus, queries, qrels = GenericDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_100k_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(xuyang_dir, args.dataset_name, "prompt_tuning_train_text.csv")).load_custom()
+    corpus, queries, qrels = GenericDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_100k_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(soft_prompt_dir, args.dataset_name, "prompt_tuning_train_text.csv")).load_custom()
 else:
     # add support for loading weak data and ori train as new train
     weak_query_file = join("inference_output", args.dataset_name, f"weak_queries_50_tiny_llama-1.1b_523_prompt_3.jsonl")
     weak_qrels_file = join("inference_output", args.dataset_name, f"weak_train_50_tiny_llama-1.1b_523_prompt_3.csv")
-    corpus, queries, qrels = WeakDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_100k_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(xuyang_dir, args.dataset_name, "prompt_tuning_train_text.tsv"), weak_query_file=weak_query_file, weak_qrels_file=weak_qrels_file).load_weak_custom()
+    corpus, queries, qrels = WeakDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_100k_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(soft_prompt_dir, args.dataset_name, "prompt_tuning_train_text.tsv"), weak_query_file=weak_query_file, weak_qrels_file=weak_qrels_file).load_weak_custom()
 
 #### Please Note not all datasets contain a dev split, comment out the line if such the case
 dev_corpus, dev_queries, dev_qrels = GenericDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_100k_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(beir_dir, args.dataset_name, "qrels", "dev.tsv")).load_custom()

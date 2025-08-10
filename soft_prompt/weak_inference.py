@@ -11,7 +11,7 @@ from transformers import AutoModelForCausalLM
 from transformers import AutoTokenizer
 from random import randint
 
-from xuyang.default_prompt import DefaultPrompt
+from soft_prompt.default_prompt import DefaultPrompt
 
 # 약한 쿼리(weak queries)'를 실제로 생성하는 역할
 def simple_filter(text):
@@ -141,4 +141,4 @@ if __name__ == "__main__":
 
 
 
-# python -m xuyang.weak_inference --weak_queries_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.jsonl --weak_train_path inference_output/law/weak_train_50_tiny_llama-1.1b_523_prompt_3.csv --peft_model_id llm_models/v1_pointwise_without_prompt_example_law_tiny_llama-1.1b_tiny_llama-1.1b_CAUSAL_LM_TEXT_50_50_3_fixed_prompt_contractive_hard_10_val_loss_2025-08-09_1/tiny_llama-1.1b_CAUSAL_LM_TEXT/ --data_path xuyang/data/law/corpus_filtered.csv --prompt_num 3 --dataset_name law --new_query_id 5000000 --train_prompt_path xuyang/data/law/prompt_tuning_train_text.csv --device cpu
+# python -m soft_prompt.weak_inference --weak_queries_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.jsonl --weak_train_path inference_output/law/weak_train_50_tiny_llama-1.1b_523_prompt_3.csv --peft_model_id llm_models/v1_pointwise_without_prompt_example_law_tiny_llama-1.1b_tiny_llama-1.1b_CAUSAL_LM_TEXT_50_50_3_fixed_prompt_contractive_hard_10_val_loss_2025-08-09_1/tiny_llama-1.1b_CAUSAL_LM_TEXT/ --data_path soft_prompt/data/law/corpus_filtered.csv --prompt_num 3 --dataset_name law --new_query_id 5000000 --train_prompt_path soft_prompt/data/law/prompt_tuning_train_text.csv --device cpu

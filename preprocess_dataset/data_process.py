@@ -11,10 +11,10 @@ import random
 random.seed(1359)
 
 cwd = os.getcwd()
-data_dir = join(cwd, "zhiyuan", "datasets")
+data_dir = join(cwd, "retrieve", "datasets")
 raw_dir = join(data_dir, "raw")
 beir_dir = join(raw_dir, "beir")
-xuyang_data_dir = join(cwd, "xuyang", "data")
+soft_prompt_data_dir = join(cwd, "soft_prompt", "data")
 
 def read_json(json_path):
     data = []
@@ -92,7 +92,7 @@ def sample_corpus(dataset_name, ratio: int = 20, train_num: int = 50, weak_num: 
     # 최종적으로 샘플링된 문서들을 저장할 경로
     reduced_corpus_path = join(beir_dir, dataset_name, f"corpus_{weak_num}_reduced_ratio_{ratio}.jsonl")
     # 약한 쿼리가 생성될 예정인 문서 ID(=100k) 목록
-    sampled_corpus_path = join(xuyang_data_dir, dataset_name, f"corpus_filtered.csv")
+    sampled_corpus_path = join(soft_prompt_data_dir, dataset_name, f"corpus_filtered.csv")
     if os.path.exists(reduced_corpus_path):
         os.remove(reduced_corpus_path)
         print(f"old {reduced_corpus_path} is deleted ...")
@@ -102,7 +102,7 @@ def sample_corpus(dataset_name, ratio: int = 20, train_num: int = 50, weak_num: 
     # Soft Prompt 튜닝에 사용될 훈련 데이터 (D_train의 일부)
     # TODO: prompt_tuning_{train_num}.csv는 따로 구축해야 함!!
     # D_train (원본 MS MARCO 훈련 데이터)에서 train_num (예: 50)개의 고유한 쿼리와 그에 해당하는 문서들을 무작위로 샘플링하여 생성한 파일
-    # train_path = join(xuyang_data_dir, f"{dataset_name}_{train_num}", f"prompt_tuning_{train_num}.csv")
+    # train_path = join(soft_prompt_data_dir, f"{dataset_name}_{train_num}", f"prompt_tuning_{train_num}.csv")
     train_path = join(beir_dir, dataset_name, "qrels", "train.csv")
     # 쿼리-문서 관련성 데이터
 

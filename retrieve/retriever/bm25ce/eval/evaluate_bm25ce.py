@@ -18,33 +18,30 @@ This code doesn't require GPU to run.
 
 Usage: python evaluate_anserini_bm25.py
 """
-from beir import util, LoggingHandler
+
 from beir.datasets.data_loader import GenericDataLoader
 from beir.retrieval.evaluation import EvaluateRetrieval
-from beir.retrieval.search.lexical import BM25Search as BM25
 from beir.reranking.models import CrossEncoder
 from beir.reranking import Rerank
-from beir.retrieval import models
 import pathlib, os, json
 import logging
 import requests
-import random
 from time import time
 from os.path import join
 import argparse
 import sys
-####
+
 cwd = os.getcwd()
-zhiyuan_dir = join(cwd, "zhiyuan")
-if zhiyuan_dir not in sys.path:
-    sys.path.append(zhiyuan_dir)
+retrieve_dir = join(cwd, "retrieve")
+if retrieve_dir not in sys.path:
+    sys.path.append(retrieve_dir)
 from data_process import load_dl, merge_queries, extract_results
-data_dir = join(cwd, "zhiyuan", "datasets")
+data_dir = join(cwd, "retrieve", "datasets")
 raw_dir = join(data_dir, "raw")
 weak_dir = join(data_dir, "weak")
 beir_dir = join(raw_dir, "beir")
-xuyang_dir = join(cwd, "xuyang", "data")
-save_dir = join(cwd, "zhiyuan", "retriever", "bm25ce")
+soft_prompt_dir = join(cwd, "soft_prompt", "data")
+save_dir = join(cwd, "retrieve", "retriever", "bm25ce")
 
 #### Download nfcorpus.zip dataset and unzip the dataset
 

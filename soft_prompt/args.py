@@ -1,5 +1,5 @@
 import argparse
-from xuyang.utils import reset_args
+from soft_prompt.utils import reset_args
 
 class PromptTuringArgs:
     def __init__(self) -> None:
@@ -36,9 +36,9 @@ class PromptTuringArgs:
 
         # dataset parameters
         self.dataset_name = "law"
-        self.train_data = "xuyang/data/law/prompt_tuning_train_text.csv"
-        self.eval_data = "xuyang/data/law/prompt_tuning_test_text.csv"
-        self.test_data = "xuyang/data/law/prompt_tuning_test_text.csv"
+        self.train_data = "soft_prompt/data/law/prompt_tuning_train_text.csv"
+        self.eval_data = "soft_prompt/data/law/prompt_tuning_test_text.csv"
+        self.test_data = "soft_prompt/data/law/prompt_tuning_test_text.csv"
         self.few_shot_num = 50
         self.fixed_prompt = True
         self.output_log_path = 'train_log'

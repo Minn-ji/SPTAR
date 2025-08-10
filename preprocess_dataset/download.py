@@ -2,7 +2,7 @@ from beir import LoggingHandler
 import logging
 import os
 
-data_dir = os.path.join("zhiyuan", "datasets")
+data_dir = os.path.join("retrieve", "datasets")
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',

@@ -9,9 +9,9 @@ from tqdm import tqdm
 from pathlib import Path
 import argparse
 from dotenv import load_dotenv
-from xuyang.args import PromptTuringArgs
-from xuyang.utils import reset_args, AverageMeter, setup_train
-from xuyang.dataset import MSMARCODataset
+from soft_prompt.args import PromptTuringArgs
+from soft_prompt.utils import reset_args, AverageMeter, setup_train
+from soft_prompt.dataset import MSMARCODataset
 
 load_dotenv()
 

@@ -4,7 +4,6 @@ import json
 import os
 import logging
 import csv
-import random
 logger = logging.getLogger(__name__)
 
 class WeakDataLoader:

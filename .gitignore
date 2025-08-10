@@ -3,6 +3,8 @@
 inference_output
 law_dataset
 llm_models
+train_log
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

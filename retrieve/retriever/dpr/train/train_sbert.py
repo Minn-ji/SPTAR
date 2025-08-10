@@ -27,26 +27,26 @@ import sys
 cwd = os.getcwd()
 if join(cwd, "zhiyuan") not in sys.path:
     sys.path.append(join(cwd, "zhiyuan"))
-    sys.path.append(join(cwd, "xuyang"))
+    sys.path.append(join(cwd, "soft_prompt"))
 from weak_data_loader import WeakDataLoader
 data_dir = join(cwd, "zhiyuan", "datasets")
 raw_dir = join(data_dir, "raw")
 weak_dir = join(data_dir, "weak")
 beir_dir = join(raw_dir, "beir")
-xuyang_dir = join(cwd, "xuyang", "data")
+soft_prompt_dir = join(cwd, "soft_prompt", "data")
 
 #### Download nfcorpus.zip dataset and unzip the dataset
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset_name', required=False, default="msmarco", type=str)
 parser.add_argument('--num_epochs', required=False, default=20, type=int)
-parser.add_argument('--train_num', required=False, default=100, type=int)
+parser.add_argument('--train_num', required=False, default=50, type=int)
 parser.add_argument('--weak_num', required=False, default="5000", type=str)
 parser.add_argument('--product', required=False, default="cosine", type=str)
 parser.add_argument('--exp_name', required=False, default="no_aug", type=str)
 args = parser.parse_args()
 #### Provide model save path
-model_name = "facebook/contriever"
+model_name = "bert-base-uncased" 
 model_save_path = os.path.join(pathlib.Path(__file__).parent.absolute(), "output", args.exp_name, str(args.train_num), "{}-v1-{}".format(model_name, args.dataset_name))
 os.makedirs(model_save_path, exist_ok=True)
 #### Just some code to print debug information to stdout
@@ -59,12 +59,12 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 #### /print debug information to stdout
 #### Provide the data_path where nfcorpus has been downloaded and unzipped
 if args.exp_name == "no_aug":
-    corpus, queries, qrels = GenericDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_{args.weak_num}_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(xuyang_dir, f"{args.dataset_name}_{args.train_num}", f"prompt_tuning_{args.train_num}.tsv")).load_custom()
+    corpus, queries, qrels = GenericDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_{args.weak_num}_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(soft_prompt_dir, f"{args.dataset_name}_{args.train_num}", f"prompt_tuning_{args.train_num}.tsv")).load_custom()
 else:
     # add support for loading weak data and ori train as new train
-    weak_query_file = join(xuyang_dir, f"{args.dataset_name}_{args.train_num}", args.weak_num, f"weak_queries_{args.train_num}_{args.exp_name}.jsonl")
-    weak_qrels_file = join(xuyang_dir, f"{args.dataset_name}_{args.train_num}", args.weak_num, f"weak_train_{args.train_num}_{args.exp_name}.tsv")
-    corpus, queries, qrels = WeakDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_{args.weak_num}_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(xuyang_dir, f"{args.dataset_name}_{args.train_num}", f"prompt_tuning_{args.train_num}.tsv"), weak_query_file=weak_query_file, weak_qrels_file=weak_qrels_file).load_weak_custom()
+    weak_query_file = join(soft_prompt_dir, f"{args.dataset_name}_{args.train_num}", args.weak_num, f"weak_queries_{args.train_num}_{args.exp_name}.jsonl")
+    weak_qrels_file = join(soft_prompt_dir, f"{args.dataset_name}_{args.train_num}", args.weak_num, f"weak_train_{args.train_num}_{args.exp_name}.tsv")
+    corpus, queries, qrels = WeakDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_{args.weak_num}_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(soft_prompt_dir, f"{args.dataset_name}_{args.train_num}", f"prompt_tuning_{args.train_num}.tsv"), weak_query_file=weak_query_file, weak_qrels_file=weak_qrels_file).load_weak_custom()
 #### Please Note not all datasets contain a dev split, comment out the line if such the case
 dev_corpus, dev_queries, dev_qrels = GenericDataLoader(corpus_file=join(beir_dir, args.dataset_name, f"corpus_{args.weak_num}_reduced_ratio_20.jsonl"), query_file=join(beir_dir, args.dataset_name, "queries.jsonl"), qrels_file=join(beir_dir, args.dataset_name, "qrels", "dev.tsv")).load_custom()
 
@@ -92,7 +92,7 @@ elif args.product == "dot":
     score_functions = {'dot_score': util.dot_score}
 #### Prepare dev evaluator
 corpus_chunk_size=100000
-ir_evaluator = retriever.load_ir_evaluator(dev_corpus, dev_queries, dev_qrels, corpus_chunk_size=corpus_chunk_size, score_functions=score_functions, return_recall=True)
+ir_evaluator = retriever.load_ir_evaluator(dev_corpus, dev_queries, dev_qrels, corpus_chunk_size=corpus_chunk_size, score_functions=score_functions)
 
 #### If no dev set is present from above use dummy evaluator
 # ir_evaluator = retriever.load_dummy_evaluator()

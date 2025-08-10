@@ -3,7 +3,7 @@ import torch
 import random
 from random import choice
 from datasets import load_dataset
-from xuyang.default_prompt import DefaultPrompt
+from soft_prompt.default_prompt import DefaultPrompt
 
 random.seed(10)
 
