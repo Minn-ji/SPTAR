@@ -191,7 +191,3 @@ if __name__ == "__main__":
     parser.add_argument("--few_shot_num", type=int, help="few shot setting")
     args = parser.parse_args(namespace=base_args)
     args = reset_args(args)
-    main(args)
-# 위치는 최상단 (SPTAR 바로 아래)
-# --train_data xuyang/data/law/prompt_tuning_50_train_text.csv --eval_data xuyang/data/msmarco_50/prompt_tuning_50_test_text.csv --test_data xuyang/data/msmarco_50/prompt_tuning_50_test_text.csv
-# python -m xuyang.prompt_train_v1 --device_idx 1 --num_virtual_tokens 50 --prompt_num 3 --llm_name tiny_llama-1.1b --few_shot_num 50 --dataset_name law

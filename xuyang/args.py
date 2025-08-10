@@ -54,7 +54,7 @@ class PromptTuringArgs:
         
         # log file
         self.experiment_dir = 'llm_models'
-        self.experiment_description = 'test_pointwise_v1_{}_{}_{}_{}_{}'.format(self.dataset_name, self.peft_model_id, self.num_virtual_tokens, self.few_shot_num, self.prompt_num)
+        self.experiment_description = 'test_v1_{}_{}_{}_{}_{}'.format(self.dataset_name, self.peft_model_id, self.num_virtual_tokens, self.few_shot_num, self.prompt_num)
 
 
 if __name__ == "__main__":

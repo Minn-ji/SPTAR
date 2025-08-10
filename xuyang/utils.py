@@ -45,9 +45,9 @@ def reset_args(args):
     args.peft_model_id = f"{args.llm_name}_{args.peft_type}_{args.task_type}"
     args.checkpoint_name = f"{args.dataset_name}_{args.model_name_or_path}_{args.peft_type}_{args.task_type}_v1.pt".replace("/", "_")
     if args.fixed_prompt:
-        args.experiment_description = 'v1_pointwise_without_prompt_example_{}_{}_{}_{}_{}_{}_fixed_prompt_contractive_hard_10_val_loss'.format(args.dataset_name, args.llm_name, args.peft_model_id, args.num_virtual_tokens, args.few_shot_num, args.prompt_num)
+        args.experiment_description = 'v1_{}_{}_{}_{}_{}_fixed_prompt'.format(args.dataset_name, args.peft_model_id, args.num_virtual_tokens, args.few_shot_num, args.prompt_num)
     else:
-        args.experiment_description = 'v1_pointwise_{}_{}_{}_{}_{}_{}'.format(args.dataset_name, args.llm_name, args.peft_model_id, args.num_virtual_tokens, args.few_shot_num, args.prompt_num)
+        args.experiment_description = 'v1_{}_{}_{}_{}_{}_{}'.format(args.dataset_name, args.llm_name, args.peft_model_id, args.num_virtual_tokens, args.few_shot_num, args.prompt_num)
 
 
     return args
