@@ -191,3 +191,4 @@ if __name__ == "__main__":
     parser.add_argument("--few_shot_num", type=int, help="few shot setting")
     args = parser.parse_args(namespace=base_args)
     args = reset_args(args)
+    main(args)
