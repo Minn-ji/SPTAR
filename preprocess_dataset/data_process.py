@@ -112,13 +112,15 @@ def sample_corpus(dataset_name, ratio: int = 20, train_num: int = 50, weak_num: 
     labeled_corpus_set = set()
     train_data = pd.read_csv(train_path)
     test_data = pd.read_csv(test_path)
-    sampled_data = pd.read_csv(sampled_corpus_path['_id'])
+    sampled_data = pd.read_csv(sampled_corpus_path)['_id']
     df = pd.concat([train_data, test_data])
     # df query-id, corpus-id, score
-    for _, row in df.iterrows():
-        labeled_corpus_set.add(str(row["corpus-id"]))
-    for _, row in sampled_data.iterrows():
-        labeled_corpus_set.add(str(row["_id"]))
+
+    for row in list(df["corpus-id"]):
+        labeled_corpus_set.add(str(row))
+    for row in list(sampled_data):
+        print(row)
+        labeled_corpus_set.add(str(row))
 
     # sample negative from filtered_corpus-weak
     filtered_corpus_remove_weak = [] # 약한 쿼리 생성 대상 문서 + 레이블된 문서 제외한 나머지 레이블 없는 문서들
