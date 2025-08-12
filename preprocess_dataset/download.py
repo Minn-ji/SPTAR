@@ -1,13 +1,6 @@
-from beir import LoggingHandler
-import logging
 import os
 
 data_dir = os.path.join("retrieve", "datasets")
-
-logging.basicConfig(format='%(asctime)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S',
-                    level=logging.INFO,
-                    handlers=[LoggingHandler()])
 
 out_dir = os.path.join(data_dir, "raw", "beir")
 os.makedirs(out_dir, exist_ok=True)
