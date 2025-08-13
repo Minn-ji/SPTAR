@@ -37,10 +37,16 @@ def reset_args(args):
         args.model_name_or_path = "meta-llama/Llama-3.2-1B"
         args.tokenizer_name_or_path = "meta-llama/Llama-3.2-1B"
         args.max_length = 58180 # 131072
+    elif args.llm_name == 'llama-2-7b':
+        args.model_name_or_path = 'meta-llama/Llama-2-7b'
+        args.tokenizer_name_or_path = 'meta-llama/Llama-2-7b'
+        args.max_length = 4096
+
     else:
         args.model_name_or_path = "openai-community/gpt2"
         args.tokenizer_name_or_path = "openai-community/gpt2"
         args.max_length = 1024
+
     # reset path
     args.peft_model_id = f"{args.llm_name}_{args.peft_type}_{args.task_type}"
     args.checkpoint_name = f"{args.dataset_name}_{args.model_name_or_path}_{args.peft_type}_{args.task_type}_v1.pt".replace("/", "_")

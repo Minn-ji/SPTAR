@@ -25,6 +25,10 @@ class PromptTuringArgs:
             self.model_name_or_path = "openai-community/gpt2"
             self.tokenizer_name_or_path = "openai-community/gpt2"
             self.max_length = 1024
+        elif self.llm_name == 'llama-2-7b':
+            self.model_name_or_path ='meta-llama/Llama-2-7b'
+            self.tokenizer_name_or_path = 'meta-llama/Llama-2-7b'
+            self.max_length = 4096
 
         # peft_config
         self.peft_type = 'CAUSAL_LM'
