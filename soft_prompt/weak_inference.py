@@ -134,11 +134,11 @@ if __name__ == "__main__":
     model.eval()
     model.to(args.device)
     torch.set_grad_enabled(False)  # ✅ 인퍼런스에서 그래프 비활성화
-    corpus_filtered = json.loads(pd.read_csv(args.data_path).iloc[:10,:].to_json(orient="records"))
+    corpus_filtered = json.loads(pd.read_csv(args.data_path).to_json(orient="records"))
     train_prompt = json.loads(pd.read_csv(args.train_prompt_path).to_json(orient="records"))
     weak_infer(model, tokenizer, corpus_filtered, args.device, args.weak_queries_path, args.weak_train_path,
                args.prompt_num, train_prompt, args.dataset_name, int(args.new_query_id))
 
 
 
-# python -m soft_prompt.weak_inference --weak_queries_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.jsonl --weak_train_path inference_output/law/weak_train_50_tiny_llama-1.1b_523_prompt_3.csv --peft_model_id llm_models/v1_pointwise_without_prompt_example_law_tiny_llama-1.1b_tiny_llama-1.1b_CAUSAL_LM_TEXT_50_50_3_fixed_prompt_contractive_hard_10_val_loss_2025-08-09_1/tiny_llama-1.1b_CAUSAL_LM_TEXT/ --data_path soft_prompt/data/law/corpus_filtered.csv --prompt_num 3 --dataset_name law --new_query_id 5000000 --train_prompt_path soft_prompt/data/law/prompt_tuning_train_text.csv --device cpu
+# python -m soft_prompt.weak_inference --weak_queries_path inference_output/law/weak_queries_50_tiny_llama-1.1b_523_prompt_3.jsonl --weak_train_path inference_output/law/weak_train_50_tiny_llama-1.1b_523_prompt_3.csv --peft_model_id llm_models/v1_law_tiny_llama-1.1b_CAUSAL_LM_TEXT_50_50_3_fixed_prompt_2025-08-12_0/tiny_llama-1.1b_CAUSAL_LM_TEXT/ --data_path soft_prompt/data/law/corpus_filtered.csv --prompt_num 3 --dataset_name law --new_query_id 5000000 --train_prompt_path soft_prompt/data/law/prompt_tuning_train_text.csv --device cpu
