@@ -1,0 +1,7 @@
+{
+  "variant": "bge-m3@dense",
+  "embed_model_name": "upskyy/bge-m3-korean",
+  "method": "dense",
+  "dim": 1024,
+  "created_at": 1755188547
+}

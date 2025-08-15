@@ -1,0 +1,6 @@
+{
+  "variant": "ko-legal-sbert@bm25",
+  "embed_model_name": "woong0322/ko-legal-sbert-finetuned",
+  "method": "bm25",
+  "created_at": 1755188820
+}

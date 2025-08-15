@@ -1,0 +1,6 @@
+{
+  "variant": "bge-m3@bm25",
+  "embed_model_name": "upskyy/bge-m3-korean",
+  "method": "bm25",
+  "created_at": 1755186089
+}

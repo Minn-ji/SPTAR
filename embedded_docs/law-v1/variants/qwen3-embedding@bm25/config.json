@@ -1,0 +1,6 @@
+{
+  "variant": "qwen3-embedding@bm25",
+  "embed_model_name": "Day1Kim/Qwen3-Embedding-0.6B-Korean",
+  "method": "bm25",
+  "created_at": 1755183771
+}

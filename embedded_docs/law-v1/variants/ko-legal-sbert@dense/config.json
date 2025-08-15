@@ -1,0 +1,7 @@
+{
+  "variant": "ko-legal-sbert@dense",
+  "embed_model_name": "woong0322/ko-legal-sbert-finetuned",
+  "method": "dense",
+  "dim": 768,
+  "created_at": 1755182418
+}
